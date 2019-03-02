@@ -8,7 +8,7 @@ class Member(ActiveModel):
 
     def books(self):
         collection = []
-        with open('member_books.txt') as file:
+        with open('db/member_books.txt') as file:
             for line in file:
                 if line.startswith(f"{self.id},"):
                     book = Book.find(line.strip().split(',')[-1])
@@ -20,9 +20,12 @@ class Member(ActiveModel):
         book = Book.find(book_id)
         if not book:
             return "Record not found"
-        with open('member_books.txt', 'r+') as file:
+        with open('db/member_books.txt', 'r+') as file:
             for line in file:
                 if line.startswith(f"{self.id},{book_id}"):
                     print('Already assigned')
                     return
             file.write(f"{self.id},{book_id}\n")
+        book.available -= 1
+        book.save
+

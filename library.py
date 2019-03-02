@@ -2,9 +2,9 @@ from models.book import Book
 from models.member import Member
 
 def filecheck():
-    open('books.txt', 'a+').close()
-    open('members.txt', 'a+').close()
-    open('member_books.txt', 'a+').close()
+    open('db/books.txt', 'a+').close()
+    open('db/members.txt', 'a+').close()
+    open('db/member_books.txt', 'a+').close()
 
 def confirm():
     options = input('Are you sure you want to proceed? (Y/N) ')
@@ -47,8 +47,15 @@ while True:
         if not member:
             print("Record not found")
         else:
-            for b in member.books():
-                print(vars(b))
+            print('=' * 80)
+            print(f'Name:\t{member.name}')
+            print('=' * 80)
+            books = member.books()
+            if not books:
+
+                continue
+            for index, book in enumerate(books, start = 1):
+                print(f"{index}.\t{book.name}")
 
     elif option == '9':
         member_id = input('Member id: ')
@@ -57,10 +64,19 @@ while True:
         print(member.assign_book(book_id))
 
     elif option == '10':
-        print(Member.all())
+        print('=' * 80)
+        print(f"Sr.No.  Name{' '*36}")
+        print('=' * 80)
+        for index, member in enumerate(Member.all(), start = 1):
+            print(f'{str(index).ljust(8)}{member.name.ljust(40)}')
+
 
     elif option == '11':
-        print(Book.all())
+        print('=' * 80)
+        print(f"Sr.No. Book ID Name{' '*36}Author{' '*16}Available")
+        print('=' * 80)
+        for index, book in enumerate(Book.all(), start = 1):
+            print(f'{str(index).ljust(8)}{str(book.record_id).ljust(7)}{book.name.ljust(40)}{book.author.ljust(20)}{book.available}')
 
     elif option == 'exit':
         print('Exiting....')

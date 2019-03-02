@@ -12,15 +12,18 @@ class ActiveModel:
     def filename(cls):
         # Override this method in child class
         # This logic will only add "s" to the model name
-        return f"{cls.__name__.lower()}s.txt"
+        return f"db/{cls.__name__.lower()}s.txt"
 
     @classmethod
     def all(cls):
         file = open(cls.filename())
         file.seek(0)
-        contents = file.read()
+        lines = file.readlines()
         file.close()
-        return contents
+        collection = []
+        for line in lines:
+            collection.append(cls(*line.strip().split(',')[1:],id))
+        return collection
 
 
     def save(self):
