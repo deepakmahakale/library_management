@@ -52,7 +52,6 @@ while True:
             print('=' * 80)
             books = member.books()
             if not books:
-
                 continue
             for index, book in enumerate(books, start = 1):
                 print(f"{index}.\t{book.name}")
@@ -63,6 +62,19 @@ while True:
             member = Member(name)
             member.save()
             print('Member added successfully')
+
+    elif option == '4':
+        member_id = input('Member ID: ')
+        member = Member.find_with_alert(member_id)
+        if not member:
+            continue
+        print("Enter the updated details. If you don't provide value it will remain unchanged")
+        name = input(f'Member name: ({member.name}): ').strip()
+        if name:
+            member.name = name
+            member.save()
+            print('Details updated successfully')
+
 
     elif option == '5':
         member_id = input('Member ID: ')
@@ -86,6 +98,25 @@ while True:
             book = Book(name, author_name, available)
             book.save()
             print('Book added successfully')
+
+    elif option == '8':
+        book_id = input('Book ID: ')
+        book = Book.find_with_alert(book_id)
+        if not book:
+            continue
+        print("Enter the updated details. If you don't provide value it will remain unchanged")
+        name = input(f'Book name: ({book.name}): ').strip()
+        author = input(f'Book author: ({book.author}): ').strip()
+        available = input(f'Books available: ({book.available}): ').strip()
+        if name:
+            book.name = name
+        if author:
+            book.author = author
+        if available:
+            book.available = available
+        if name or author or available:
+            book.save()
+            print('Details updated successfully')
 
     elif option == '9':
         book_id = input('Book ID: ')

@@ -34,6 +34,7 @@ class ActiveModel:
                 lines = file.readlines()
                 file.seek(0)
                 for line in lines:
+                    # Replace matched line with updated contents
                     if line.startswith(f"{self.record_id},"):
                         file.write(self.attributes())
                     else:
@@ -45,6 +46,9 @@ class ActiveModel:
             file.seek(0)
             lines = file.readlines()
             lastline = lines and lines[-1]
+            # Check the last records key
+            # Might fail if you add and delete the same record
+            # We can maintain primary keys in another file
             if lastline:
                 pk = int(lastline.split(',')[0]) + 1
             else:
@@ -77,8 +81,8 @@ class ActiveModel:
         with open(cls.filename()) as file:
             for line in file:
                 if line.startswith(f"{record_id},"):
+                    # Initialize an instance and return
                     instance = cls(*line.strip().split(',')[1:],record_id)
-
                     return instance
 
     @classmethod
