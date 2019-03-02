@@ -22,18 +22,19 @@ class ActiveModel:
         file.close()
         collection = []
         for line in lines:
-            collection.append(cls(*line.strip().split(',')[1:],id))
+            attrs = line.strip().split(',')
+            collection.append(cls(*attrs[1:],attrs[0]))
         return collection
 
 
     def save(self):
-        if self.id:
+        if self.record_id:
             # Update
             with open(self.filename(), 'r+') as file:
                 lines = file.readlines()
                 file.seek(0)
                 for line in lines:
-                    if line.startswith(f"{self.id},"):
+                    if line.startswith(f"{self.record_id},"):
                         file.write(self.attributes())
                     else:
                         file.write(line)
@@ -48,7 +49,7 @@ class ActiveModel:
                 pk = int(lastline.split(',')[0]) + 1
             else:
                 pk = 1
-            self.id = pk
+            self.record_id = pk
             file.write(self.attributes())
             file.close()
         return self
@@ -56,27 +57,27 @@ class ActiveModel:
 
     def attributes(self):
         attrs =  self.__dict__.copy()
-        record_id = attrs['id']
-        del attrs['id']
+        record_id = attrs['record_id']
+        del attrs['record_id']
         attrs_list = [str(i) for i in attrs.values()]
         return(f"{record_id},{','.join(attrs_list)}\n")
 
     @classmethod
-    def delete(cls, id):
+    def delete(cls, record_id):
         with open(cls.filename(), 'r+') as file:
             lines = file.readlines()
             file.seek(0)
             for line in lines:
-                if not line.startswith(f"{id},"):
+                if not line.startswith(f"{record_id},"):
                     file.write(line)
             file.truncate()
 
     @classmethod
-    def find(cls, id):
+    def find(cls, record_id):
         with open(cls.filename()) as file:
             for line in file:
-                if line.startswith(f"{id},"):
-                    instance = cls(*line.strip().split(',')[1:],id)
+                if line.startswith(f"{record_id},"):
+                    instance = cls(*line.strip().split(',')[1:],record_id)
 
                     return instance
 
@@ -86,5 +87,5 @@ class ActiveModel:
         if not record:
             print("Record not found")
             return
-        record
+        return record
 

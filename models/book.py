@@ -1,11 +1,11 @@
 from models.active_model import ActiveModel
 
 class Book(ActiveModel):
-    def __init__(self, name, author, available = None, record_id = None):
-        self.id = record_id
+    def __init__(self, name, author, available = 0, record_id = None):
+        self.record_id = record_id
         self.name = name
         self.author = author
-        self.available = available
+        self.available = int(available)
 
     # def all():
     #     file = open('books.txt', 'a+')

@@ -18,16 +18,16 @@ def confirm():
 filecheck()
 
 message = """
-    1. Add member
-    2. Update member details
-    3. Delete member
-    4. Add book
-    5. Update book details
-    6. Delete book
-    7. View a member
-    9. Assign a book
-    10. List all members
-    11. List all books"""
+    1. List members                6. List books
+    2. View member deails          7. Add book
+    3. Add Member                  8. Update book details
+    4. Update member details       9. Delete book
+    5. Delete member              10. Assign book
+
+    11. Return book
+
+    Type `exit` to exit the program
+"""
 
 while True:
 
@@ -35,13 +35,13 @@ while True:
     option = input('Please enter your choice: ').lower()
 
     if option == '1':
-        name = input('Member name: ')
-        if confirm():
-            member = Member(name)
-            member.save()
-            print('Member added successfully')
+        print('=' * 80)
+        print(f"Sr.No. Member ID Name{' '*36}")
+        print('=' * 80)
+        for index, member in enumerate(Member.all(), start = 1):
+            print(f'{str(index).ljust(7)}{str(member.record_id).ljust(10)}{member.name.ljust(30)}')
 
-    elif option == '7':
+    elif option == '2':
         member_id = input('Member id: ')
         member = Member.find(member_id)
         if not member:
@@ -57,26 +57,54 @@ while True:
             for index, book in enumerate(books, start = 1):
                 print(f"{index}.\t{book.name}")
 
+    elif option == '3':
+        name = input('Member name: ')
+        if confirm():
+            member = Member(name)
+            member.save()
+            print('Member added successfully')
+
+    elif option == '5':
+        member_id = input('Member ID: ')
+        if confirm():
+            member = Member.find_with_alert(member_id)
+            Member.delete(member_id)
+            print('Member deleted successfully')
+
+    elif option == '6':
+        print('=' * 80)
+        print(f"Sr.No. Book ID Name{' '*26}Author{' '*14}Available")
+        print('=' * 80)
+        for index, book in enumerate(Book.all(), start = 1):
+            print(f'{str(index).ljust(8)}{str(book.record_id).ljust(7)}{book.name.ljust(30)}{book.author.ljust(20)}{book.available}')
+
+    elif option == '7':
+        name = input('Book name: ')
+        author_name = input('Author name: ')
+        available = input('Available book count: ')
+        if confirm():
+            book = Book(name, author_name, available)
+            book.save()
+            print('Book added successfully')
+
     elif option == '9':
+        book_id = input('Book ID: ')
+        if confirm():
+            member = Book.find_with_alert(book_id)
+            Book.delete(book_id)
+            print('Book deleted successfully')
+
+    elif option == '10':
         member_id = input('Member id: ')
         member = Member.find_with_alert(member_id)
         book_id = input('Book id: ')
         print(member.assign_book(book_id))
 
-    elif option == '10':
-        print('=' * 80)
-        print(f"Sr.No.  Name{' '*36}")
-        print('=' * 80)
-        for index, member in enumerate(Member.all(), start = 1):
-            print(f'{str(index).ljust(8)}{member.name.ljust(40)}')
-
-
     elif option == '11':
-        print('=' * 80)
-        print(f"Sr.No. Book ID Name{' '*36}Author{' '*16}Available")
-        print('=' * 80)
-        for index, book in enumerate(Book.all(), start = 1):
-            print(f'{str(index).ljust(8)}{str(book.record_id).ljust(7)}{book.name.ljust(40)}{book.author.ljust(20)}{book.available}')
+        member_id = input('Member id: ')
+        member = Member.find_with_alert(member_id)
+        book_id = input('Book id: ')
+        print(member.return_book(book_id))
 
     elif option == 'exit':
         print('Exiting....')
