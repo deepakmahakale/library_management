@@ -31,6 +31,7 @@ class Member(ActiveModel):
         return 'Operation successful'
 
     def return_book(self, book_id):
+        success = False
         book = Book.find_with_alert(book_id)
         if not book:
             return
@@ -38,9 +39,14 @@ class Member(ActiveModel):
             lines = file.readlines()
             file.seek(0)
             for line in lines:
-                if not line.startswith(f"{self.record_id},{book_id}"):
+                if line.startswith(f"{self.record_id},{book_id}"):
+                    book.available += 1
+                    book.save()
+                    success = True
+                else:
                     file.write(line)
             file.truncate()
-        book.available += 1
-        book.save()
-        return 'Operation successful'
+        if success:
+            return 'Operation successful'
+        else:
+            return 'Record not found'

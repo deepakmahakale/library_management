@@ -128,12 +128,16 @@ while True:
     elif option == '10':
         member_id = input('Member id: ')
         member = Member.find_with_alert(member_id)
+        if not member:
+            continue
         book_id = input('Book id: ')
         print(member.assign_book(book_id))
 
     elif option == '11':
         member_id = input('Member id: ')
         member = Member.find_with_alert(member_id)
+        if not member:
+            continue
         book_id = input('Book id: ')
         print(member.return_book(book_id))
 
